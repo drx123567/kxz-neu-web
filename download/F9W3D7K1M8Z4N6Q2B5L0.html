@@ -1,2 +1,282 @@
-    <meta http-equiv="refresh" content="0;url=https://anonym.ninja/download/file/request/t7GQpLMUpUwNO7J">
-    <title>KXZ Project</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KXZ Project</title>
+
+<style>
+:root{
+  --bg:#05060a;
+  --panel:#0b0f1c;
+  --panel2:#0e1326;
+  --border:#1e2540;
+
+  --text:#eef1ff;
+  --muted:#9aa3c7;
+
+  --accent:#7c5cff;
+  --accent-glow:rgba(124,92,255,.45);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color:var(--text);
+  background:
+    radial-gradient(800px 500px at 20% 15%, rgba(124,92,255,.18), transparent 60%),
+    radial-gradient(700px 500px at 80% 20%, rgba(90,120,255,.12), transparent 60%),
+    var(--bg);
+  display:grid;
+  place-items:center;
+  padding:32px;
+}
+
+.wrap{width:min(620px,100%)}
+
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:32px;
+  box-shadow:
+    0 40px 120px rgba(0,0,0,.85),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+h1{
+  margin:0;
+  font-size:24px;
+  letter-spacing:.4px;
+}
+
+.tag{
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(124,92,255,.12);
+  border:1px solid rgba(124,92,255,.35);
+  color:#dcdcff;
+  font-size:12px;
+}
+
+.desc{
+  color:var(--muted);
+  font-size:14.5px;
+  line-height:1.6;
+  margin-bottom:24px;
+}
+
+.download{
+  width:100%;
+  border-radius:18px;
+  padding:16px 18px;
+  background:
+    linear-gradient(180deg, rgba(124,92,255,.28), rgba(124,92,255,.14));
+  border:1px solid rgba(124,92,255,.45);
+  color:var(--text);
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.3px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:
+    0 0 0 rgba(124,92,255,0),
+    0 18px 60px rgba(124,92,255,.25);
+  transition:.2s ease;
+}
+
+.download:hover{
+  transform:translateY(-1px);
+  box-shadow:
+    0 0 28px var(--accent-glow),
+    0 24px 70px rgba(124,92,255,.35);
+}
+
+.arrow{
+  width:40px;
+  height:40px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.12);
+}
+
+/* modal */
+.backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+}
+
+.modal{
+  width:min(520px,100%);
+  background:linear-gradient(180deg,#0c1022,#0a0e1d);
+  border-radius:22px;
+  border:1px solid var(--border);
+  box-shadow:0 50px 140px rgba(0,0,0,.9);
+}
+
+.modal-head{
+  padding:18px 20px 10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.modal-head span{
+  font-weight:800;
+  letter-spacing:.3px;
+}
+
+.close{
+  width:38px;
+  height:38px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  cursor:pointer;
+}
+
+.modal-body{
+  padding:0 20px 20px;
+  color:var(--muted);
+  font-size:14.5px;
+}
+
+.pwbox{
+  margin-top:14px;
+  padding:16px;
+  border-radius:16px;
+  background:rgba(124,92,255,.10);
+  border:1px solid rgba(124,92,255,.35);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.pw{
+  font-family:monospace;
+  font-size:16px;
+  letter-spacing:1px;
+  color:var(--text);
+}
+
+.copy{
+  padding:10px 14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(0,0,0,.25);
+  color:var(--text);
+  cursor:pointer;
+}
+
+.actions{
+  padding:0 20px 20px;
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+}
+
+.action{
+  padding:12px 16px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.action.primary{
+  background:linear-gradient(180deg, rgba(124,92,255,.32), rgba(124,92,255,.18));
+  border-color:rgba(124,92,255,.45);
+}
+</style>
+</head>
+
+<body>
+<main class="wrap">
+  <section class="card">
+    <div class="header">
+      <h1>KXZ Project</h1>
+      <div class="tag">Release</div>
+    </div>
+
+    <div class="desc">
+      Official Download for KXZ.  
+      Click below to receive the folder password before continuing.
+    </div>
+
+    <button class="download" id="downloadBtn">
+      Download
+      <div class="arrow">→</div>
+    </button>
+  </section>
+</main>
+
+<div class="backdrop" id="backdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <span>Download information</span>
+      <button class="close" id="close">✕</button>
+    </div>
+
+    <div class="modal-body">
+      Folder password:
+      <div class="pwbox">
+        <span class="pw" id="pw">kxz</span>
+        <button class="copy" id="copy">Copy</button>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="action" id="cancel">Cancel</button>
+      <a class="action primary" id="go" target="_blank">Continue →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const DOWNLOAD_URL = "https://anonym.ninja/download/file/request/t7GQpLMUpUwNO7J";
+
+const backdrop = document.getElementById("backdrop");
+const go = document.getElementById("go");
+
+downloadBtn.onclick = () => {
+  go.href = DOWNLOAD_URL;
+  backdrop.style.display = "flex";
+};
+
+close.onclick = cancel.onclick = () => backdrop.style.display = "none";
+
+backdrop.onclick = e => {
+  if(e.target === backdrop) backdrop.style.display = "none";
+};
+
+copy.onclick = async () => {
+  await navigator.clipboard.writeText("kxz");
+  copy.textContent = "Copied";
+  setTimeout(()=>copy.textContent="Copy",800);
+};
+</script>
+</body>
+</html>
