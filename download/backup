@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Download • KXZ Project</title>
+  <meta name="robots" content="noindex, nofollow"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --bg:#07080a;
+      --panel:rgba(8,9,12,0.94);
+      --surface:rgba(255,255,255,0.03);
+      --surface2:rgba(255,255,255,0.05);
+      --border:rgba(255,255,255,0.07);
+      --border2:rgba(255,255,255,0.10);
+
+      /* THEME */
+      --accent:#7800d2;         /* main theme color */
+      --accent2:#9a4dff;        /* lighter accent companion */
+      --text:#f1f1f1;
+      --muted:rgba(255,255,255,0.45);
+      --success:#10b981;
+      --shadow:0 20px 60px rgba(0,0,0,0.55);
+    }
+
+    html,body{height:100%;}
+    body{
+      font-family:'Space Grotesk',sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      overflow-x:hidden;
+      min-height:100vh;
+      display:flex;
+      background-image:
+        radial-gradient(ellipse 90vw 55vh at 50% -5%, rgba(120,0,210,0.14) 0%, transparent 58%),
+        radial-gradient(ellipse 60vw 40vh at 95% 100%, rgba(154,77,255,0.08) 0%, transparent 55%);
+    }
+    a{color:inherit;text-decoration:none;}
+    svg{display:block;}
+
+    /* ===== TOP BAR (FIXED) =====
+       Fix: previously the fixed header overlapped content on some screens.
+       We use a constant --topbar-h and apply it to main padding-top.
+    */
+    :root{ --topbar-h: 58px; }
+
+    .topbar{
+      position:fixed;inset:0 0 auto 0;height:var(--topbar-h);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 14px;
+      background:rgba(7,8,10,0.86);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(20px);
+      z-index:50;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;
+      font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+      user-select:none;
+      min-width:0;
+    }
+    .logoDot{
+      width:10px;height:10px;border-radius:99px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      box-shadow:0 0 0 6px rgba(120,0,210,0.14);
+      flex:0 0 auto;
+    }
+    .brandText{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--border2);background:var(--surface2);
+      padding:8px 10px;border-radius:12px;
+      color:var(--muted);font-weight:700;font-size:12px;
+      white-space:nowrap;
+    }
+
+    /* ===== LAYOUT ===== */
+    .main{
+      flex:1;width:100%;
+      padding:calc(var(--topbar-h) + 18px) 14px 40px;
+    }
+    .container{width:100%;max-width:960px;margin:0 auto;}
+
+    @media(min-width:768px){
+      :root{ --topbar-h: 62px; } /* slightly taller on desktop for nicer spacing */
+      .topbar{padding:0 18px;}
+      .main{padding:calc(var(--topbar-h) + 26px) 24px 44px;}
+      .container{max-width:920px;}
+      .brand{font-size:13px;}
+    }
+
+/* Disable text selection */
+html, body, *{
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* ===== MODAL ===== */
+.modalOverlay{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,0.62);
+  backdrop-filter:blur(10px);
+  z-index:999;
+}
+
+.modalOverlay.isOpen{ display:flex; }
+
+.modalCard{
+  width:100%;
+  max-width:440px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:linear-gradient(180deg, rgba(8,9,12,0.92), rgba(8,9,12,0.86));
+  box-shadow:0 26px 90px rgba(0,0,0,0.65);
+  overflow:hidden;
+}
+
+.modalTop{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:16px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+
+.modalIcon{
+  width:36px;height:36px;border-radius:12px;
+  border:1px solid rgba(120,0,210,0.28);
+  background:rgba(120,0,210,0.12);
+  color:var(--accent2);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 26px rgba(120,0,210,0.14);
+  flex:0 0 auto;
+}
+.modalIcon svg{width:18px;height:18px;}
+
+.modalText{flex:1;min-width:0;}
+.modalTitle{font-weight:900;letter-spacing:-0.02em;}
+.modalSub{margin-top:4px;color:rgba(255,255,255,0.60);font-size:12px;line-height:1.45;}
+
+.modalClose{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.04);
+  color:rgba(255,255,255,0.75);
+  border-radius:12px;
+  width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.modalClose svg{width:16px;height:16px;}
+
+.modalBody{padding:14px 16px 16px;}
+
+.passRow{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.passLabel{font-size:12px;color:rgba(255,255,255,0.60);font-weight:800;}
+
+.passBox{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.03);
+}
+.passBox code{
+  font-family:'DM Mono', monospace;
+  font-size:13px;
+  color:rgba(255,255,255,0.92);
+}
+
+.copyBtn{
+  border:1px solid rgba(120,0,210,0.35);
+  background:rgba(120,0,210,0.10);
+  color:var(--accent2);
+  padding:8px 10px;
+  border-radius:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.modalActions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+}
+
+.ghostBtn{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.04);
+  color:rgba(255,255,255,0.80);
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.primaryBtn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:900;
+  color:#fff;
+  border:1px solid rgba(120,0,210,0.45);
+  background:linear-gradient(135deg, rgba(120,0,210,0.98), rgba(88,0,170,0.92));
+  box-shadow:0 10px 34px rgba(120,0,210,0.18);
+}
+
+
+
+    /* ===== HERO ===== */
+.hero{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;   /* force clean left alignment */
+  gap:6px;
+  margin-bottom:22px;       /* tighter spacing to cards */
+}
+.hero{
+  max-width:660px;      /* match .dlWrap */
+  margin:0 auto 22px;   /* center the hero block + keep spacing */
+}
+    .hTitle{font-size:clamp(20px,2.4vw,26px);font-weight:800;letter-spacing:-0.03em;line-height:1.2;}
+    .hSub{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  max-width:48ch;   /* keeps it neat, not too wide */
+}
+    .statusPill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 13px;border-radius:99px;
+      border:1px solid rgba(16,185,129,0.22);
+      background:rgba(16,185,129,0.08);
+      color:rgba(255,255,255,0.9);
+      font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .sDot{width:8px;height:8px;border-radius:99px;background:var(--success);box-shadow:0 0 0 4px rgba(16,185,129,0.12);}
+
+    /* ===== DOWNLOAD ===== */
+    .dlWrap{max-width:660px;margin:0 auto;}
+    .dlCard{
+      border-radius:18px;border:1px solid var(--border2);
+      background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));
+      box-shadow:var(--shadow);overflow:hidden;
+    }
+    .dlCardInner{padding:22px;}
+    .dlTopRow{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+    .dlIcon{
+      width:46px;height:46px;border-radius:14px;
+      border:1px solid rgba(120,0,210,0.28);
+      background:rgba(120,0,210,0.12);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 0 22px rgba(120,0,210,0.14);
+      flex:0 0 auto;
+    }
+    .dlIcon svg{width:22px;height:22px;}
+    .dlName{font-weight:800;letter-spacing:-0.01em;line-height:1.2;}
+    .dlMini{
+      margin-top:4px;
+      display:flex;align-items:center;gap:9px;
+      color:var(--muted);font-size:12px;font-weight:700;
+      flex-wrap:wrap;
+    }
+    .dlStatus{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:5px 10px;border-radius:99px;
+      border:1px solid rgba(16,185,129,0.2);
+      background:rgba(16,185,129,0.08);
+      color:#34d399;
+      font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    }
+    .dlStatus .sDot{
+      width:7px;height:7px;border-radius:99px;background:#34d399;
+      box-shadow:0 0 0 4px rgba(16,185,129,0.10);
+    }
+
+    .dlBtn{
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      width:100%;padding:14px 16px;border-radius:13px;min-height:48px;
+      font-weight:700;font-size:14px;cursor:pointer;
+      border:1px solid rgba(120,0,210,0.45);
+      background:linear-gradient(135deg, rgba(120,0,210,0.98), rgba(88,0,170,0.92));
+      color:#fff;transition:all .2s;
+      box-shadow:0 6px 28px rgba(120,0,210,0.22);
+      font-family:inherit;
+    }
+    .dlBtn:hover{transform:translateY(-2px);box-shadow:0 10px 38px rgba(120,0,210,0.30);}
+    .dlBtn:active{transform:translateY(-1px);}
+
+    .qsTitle{margin:0 0 10px;font-weight:800;font-size:13px;display:flex;align-items:center;gap:9px;}
+.qsIcon{
+  width:20px;
+  height:20px;
+  border-radius:8px;
+  border:1px solid rgba(120,0,210,0.30);     /* accent border */
+  background:rgba(120,0,210,0.10);           /* subtle accent fill */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--accent);                        /* makes ? theme color */
+}
+
+.qsIcon svg{
+  width:14px;
+  height:14px;
+  shape-rendering:geometricPrecision;
+}
+
+.qsIcon svg{ width:15px; height:15px; }
+
+    .qsList{display:flex;flex-direction:column;gap:9px;}
+    .qsItem{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:10px;border-radius:13px;
+      border:1px solid var(--border);
+      background:var(--surface);
+      color:rgba(255,255,255,0.75);
+      font-size:13px;line-height:1.55;font-weight:600;
+    }
+    .qsNum{
+      width:22px;height:22px;border-radius:8px;
+      border:1px solid rgba(120,0,210,0.35);
+      background:rgba(120,0,210,0.12);
+      color:rgba(255,255,255,0.92);
+      display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:800;flex:0 0 auto;margin-top:1px;
+    }
+
+    .warnBar{
+      border-radius:13px;
+      border:1px solid rgba(245,158,11,0.18);
+      background:rgba(245,158,11,0.07);
+      color:rgba(255,255,255,0.8);
+      padding:12px;
+      display:flex;align-items:flex-start;gap:10px;
+      font-size:12px;line-height:1.6;font-weight:600;
+    }
+    .warnBar svg{width:17px;height:17px;flex:0 0 auto;margin-top:1px;opacity:.85;}
+    .stackGap{display:flex;flex-direction:column;gap:13px;margin-top:16px;}
+  </style>
+</head>
+
+<body>
+  <header class="topbar" aria-label="Header">
+    <div class="brand" title="KXZ Project">
+      <span class="logoDot" aria-hidden="true"></span>
+      <span class="brandText">KXZ Project</span>
+    </div>
+
+    <div class="chip" aria-label="Build">
+      <span style="opacity:.9;">Last Updated</span>
+      <span style="opacity:.35;">•</span>
+      <span style="color:rgba(255,255,255,0.85);">2026-02-24</span>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container">
+      <div class="hero">
+        <div>
+          <h1 class="hTitle">Download</h1>
+          <p class="hSub">Get the latest build and install instructions.</p>
+        </div>
+      </div>
+
+      <section class="dlWrap" aria-label="Download section">
+        <div class="stackGap">
+          <div class="dlCard">
+            <div class="dlCardInner">
+              <div class="dlTopRow">
+                <div class="dlIcon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                  </svg>
+                </div>
+
+                <div class="dlMeta">
+                  <div class="dlName">KXZ Loader</div>
+                  <div class="dlMini">
+                    <span>Version 2.4.1</span>
+                    <span style="opacity:.35">&bull;</span>
+                    <span class="dlStatus"><span class="sDot" aria-hidden="true"></span> Undetected</span>
+                  </div>
+                </div>
+              </div>
+
+              <a class="dlBtn" href="https://example.com/download.exe" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                Download Now
+              </a>
+            </div>
+          </div>
+
+          <div class="dlCard">
+            <div class="dlCardInner">
+<h3 class="qsTitle">
+<span class="qsIcon" aria-hidden="true">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4" />
+  <path d="M12 17h.01" />
+</svg>
+</span>
+  Setup Instructions
+</h3>
+              <div class="qsList">
+                <div class="qsItem"><div class="qsNum">1</div><div>Download and extract the loader to a folder</div></div>
+                <div class="qsItem"><div class="qsNum">2</div><div>Add the folder to your antivirus exclusions</div></div>
+                <div class="qsItem"><div class="qsNum">3</div><div>Right-click and run as Administrator</div></div>
+		<div class="qsItem"><div class="qsNum">4</div><div>Wait for the loader to authenticate</div></div>
+		<div class="qsItem"><div class="qsNum">5</div><div>Launch FiveM and enjoy</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="warnBar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+              <line x1="12" x2="12" y1="9" y2="13"/>
+              <line x1="12" x2="12.01" y1="17" y2="17"/>
+            </svg>
+            <div>Only run software you trust. If something looks off, don’t run it — contact support first.</div>
+          </div>
+        </div>
+      </section>
+
+  </main>
+
+  <!-- Download Password Modal (KEEP THIS ABOVE THE SCRIPT) -->
+  <div class="modalOverlay" id="dlModal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="dlModalTitle">
+      <div class="modalTop">
+        <div class="modalIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 8v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"/>
+            <path d="M7 8V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/>
+            <path d="M8 12h8"/>
+            <path d="M8 16h6"/>
+          </svg>
+        </div>
+
+        <div class="modalText">
+          <div class="modalTitle" id="dlModalTitle">Extract Password</div>
+          <div class="modalSub">Use this password to unzip the downloaded file.</div>
+        </div>
+
+        <button class="modalClose" type="button" id="dlModalClose" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18"/><path d="M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modalBody">
+        <div class="passRow">
+          <div class="passLabel">Password</div>
+          <div class="passBox">
+            <code id="zipPass">kxz</code>
+            <button class="copyBtn" type="button" id="copyPass">Copy</button>
+          </div>
+        </div>
+
+        <div class="modalActions">
+          <a class="primaryBtn" id="dlModalGo" href="#" target="_blank" rel="noopener" download>
+            Continue<span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT MUST BE AFTER THE MODAL -->
+<script>
+  (function () {
+    // --- block right click ---
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // --- block common shortcuts ---
+    document.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase();
+      const ctrl = e.ctrlKey || e.metaKey; // ctrl on win/linux, cmd on mac
+
+      // block view-source, select all, copy, inspect, save, print, devtools
+      if (
+        (ctrl && ['u','a','c','s','p'].includes(key)) ||
+        (e.key === 'F12') ||
+        (ctrl && e.shiftKey && ['i','j','c'].includes(key))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }, true);
+
+    // --- your existing modal code below ---
+    const dlBtn = document.querySelector('.dlBtn');
+    const modal = document.getElementById('dlModal');
+    const closeBtn = document.getElementById('dlModalClose');
+    const goBtn = document.getElementById('dlModalGo');
+    const copyBtn = document.getElementById('copyPass');
+    const zipPassEl = document.getElementById('zipPass');
+
+    if (!dlBtn || !modal || !goBtn) return;
+
+    function openModal(href) {
+      goBtn.href = href;
+      modal.classList.add('isOpen');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      modal.classList.remove('isOpen');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    dlBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openModal(dlBtn.href);
+    });
+
+    closeBtn && closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('isOpen')) closeModal();
+    });
+
+    copyBtn && copyBtn.addEventListener('click', async () => {
+      const txt = zipPassEl.textContent.trim();
+      try {
+        await navigator.clipboard.writeText(txt);
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => (copyBtn.textContent = 'Copy'), 900);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => (copyBtn.textContent = 'Copy'), 900);
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
